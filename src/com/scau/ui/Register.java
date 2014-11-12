@@ -2,6 +2,10 @@ package com.scau.ui;
 
 import java.awt.Color;
 import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -12,16 +16,20 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 import com.scau.model.GetTime;
+import com.scau.model.RegisterSql;
 /**
  * 注册界面
  * @author beyondboy
  */
 public class Register extends JDialog
 {
+	String statu="普通会员";
 	JLabel userName=new JLabel();
 	JLabel cardId=new JLabel();
 	JLabel pass=new JLabel();
@@ -42,10 +50,14 @@ public class Register extends JDialog
 	JButton registerButton=new JButton();
 	JButton resetButton=new JButton();
 	JPanel panel1=new JPanel();
+	public final static String CREATE_TABLE="create table register_table ( id int auto_increment primary key,userName varchar(255),cardId varchar(255),pass varchar(255),user_call varchar(255),user_date varchar(255),user_intigeral varchar(255),user_status varchar(255));";
+	public final static String INSERT="insert into register_table (userName,cardId,pass,user_call,user_date,user_intigeral,user_status) values(?,?,?,?,?,?,?);";
 	//正则表达式
 	String str1="^(?:(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])|(?=.*[A-Z])(?=.*[a-z])(?=.*[^A-Za-z0-9])|(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])|(?=.*[a-z])(?=.*[0-9])(?=.*[^A-Za-z0-9])).{6,12}$";
-	String str2="^(\\d+([a-z]|[A-Z])+\\d*)|(([a-z]|[A-Z])+\\d+([a-z]|[A-Z])*)$";
-	String str3="\\w{1,5}|\\d{1,20}|[a-z]{1,20}|[A-Z]{1,20}";
+	String str2="^(\\d+([a-z]|[A-Z])+\\d*)|(([a-z]|[A-Z])+\\d+([a-z]|[A-Z])*)|([a-z]+[A-Z]+[a-z]*)|([A-Z]+[a-z]+[A-Z]*)$";
+	String str3="\\w{1,5}|\\d{6,20}|[a-z]{6,20}|[A-Z]{6,20}";
+	//数据库
+	RegisterSql sql=null;
 	public Register()
 	{
 		this(new Frame(), "注册用户",false);
@@ -126,14 +138,105 @@ public class Register extends JDialog
 		panel1.add(registerButton);
 		panel1.add(resetButton);
 		getContentPane().add(panel1);
+		//添加密码框的监听
 		passField.addKeyListener(new KeyAdapter()
+		{
+			@Override
+			public void keyReleased(KeyEvent e)
+			{
+				super.keyReleased(e);
+				super.keyPressed(e);
+				String str=checkPassword(String.valueOf(passField.getPassword()));
+				validateField.setText(str);
+			}
+		});
+		//添加下拉菜单条目改变监听
+		statusBox.addItemListener(new ItemListener()
+		{
+			@Override
+			public void itemStateChanged(ItemEvent e)
+			{
+				statu=(String)statusBox.getSelectedItem();
+			}
+		});
+		//添加卡号的监听
+		cardIdField.addKeyListener(new KeyAdapter()
 		{
 			@Override
 			public void keyPressed(KeyEvent e)
 			{
 				super.keyPressed(e);
-				validateField.setText(checkPassword(passField.getText()));
+				int keyChar=e.getKeyChar();
+				if(!(keyChar>=KeyEvent.VK_0&&keyChar<=KeyEvent.VK_9))
+					JOptionPane.showMessageDialog(null, "输入数据不合法","信息错误提示",JOptionPane.INFORMATION_MESSAGE);
+				cardIdField.setText(cardIdField.getText().replaceAll("[^0-9]",""));
 			}
+		});
+		//添加电话的键盘监听
+		callField.addKeyListener(new KeyAdapter()
+		{
+			@Override
+			public void keyPressed(KeyEvent e)
+			{
+				super.keyPressed(e);
+				int keyChar=e.getKeyChar();
+				//输入若不是数字，将弹出错误提示
+				if(!(keyChar>=KeyEvent.VK_0&&keyChar<=KeyEvent.VK_9))
+					JOptionPane.showMessageDialog(null,  "输入数据不合法","信息错误提示",JOptionPane.INFORMATION_MESSAGE);
+				callField.setText(callField.getText().replaceAll("[^0-9]",""));
+			}
+		});
+		//添加按钮监听
+		resetButton.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				userField.setText("");
+				cardIdField.setText("");
+				passField.setText("");
+				comfirePassField.setText("");
+				callField.setText("");
+				intigralField.setText("");
+			}
+		});
+		registerButton.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				if(String.valueOf(passField.getPassword()).length()==0||cardIdField.getText().length()==0
+				  ||callField.getText().length()==0)
+				{
+					JOptionPane.showMessageDialog(Register.this, "提交的数据不合法，请检查", "提示", JOptionPane.INFORMATION_MESSAGE);
+				}				
+				String args[]=new String[7];
+				args[0]=userField.getText();
+				args[1]=cardIdField.getText();
+				args[2]=String.valueOf(passField.getPassword());
+				args[3]=callField.getText();
+				args[4]=dateField.getText();
+				args[5]=intigralField.getText();				
+				args[6]=statu;	
+				try
+				{
+					sql=new RegisterSql();
+					sql.initParam("mysql.properties");
+					sql.insertUserPrepare(INSERT, args);
+				} catch (Exception e1)
+				{
+					try
+					{
+						System.out.println("异常");
+//						sql.createTable(CREATE_TABLE);
+						sql.insertUserPrepare(INSERT, args);
+					}
+					catch (Exception e2)
+					{
+						e2.printStackTrace();
+					}										
+				}
+			}		  
 		});
 	}
 	/**
@@ -158,19 +261,25 @@ public class Register extends JDialog
 		{
 			return "强";
 		}
-		else if(passWord.matches(str2))
-			
+		else if(passWord.matches(str2))			
+		{
 			return "中";
+		}
 		else 
+		{
 			return "弱";
+		}
 	}
 	public static void main(String[] args)
 	{
 		new Register();
-		/*String string="12222222";
-		String string2="dddddd";
-		String string3="aadbcccdSSS123";
-		String string4="BBBBBBBBB";
+		/*String str1="^(?:(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])|(?=.*[A-Z])(?=.*[a-z])(?=.*[^A-Za-z0-9])|(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])|(?=.*[a-z])(?=.*[0-9])(?=.*[^A-Za-z0-9])).{6,12}$";
+		String str2="^(\\d+([a-z]|[A-Z])+\\d*)|(([a-z]|[A-Z])+\\d+([a-z]|[A-Z])*)|([a-z]+[A-Z]+)|([A-Z]+[a-z]+)$";
+		String str3="\\w{1,5}|\\d{6,20}|[a-z]{6,20}|[A-Z]{6,20}";
+		String string="sssg4164";
+		String string2="FAFsss";
+		String string3="FAF132";
+		String string4="12fafa";
 		System.out.println(string.matches(str2));
 		System.out.println(string2.matches(str2));
 		System.out.println(string3.matches(str2));
