@@ -70,12 +70,19 @@ public class Register extends JDialog
 		super(own, title, model);
 		try
 		{
+			setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 			uiInit();
+			pack();
 		} catch (Exception e)
 		{
 			e.printStackTrace();
 		}
 	}	
+	public static void main(String[] args)
+	{
+		new Register();
+		new Login();
+	}
 	private void uiInit() throws Exception
 	{
 		//清除布局格式
@@ -200,6 +207,7 @@ public class Register extends JDialog
 				intigralField.setText("");
 			}
 		});
+		//添加注册按钮监听
 		registerButton.addActionListener(new ActionListener()
 		{
 			@Override
@@ -209,7 +217,15 @@ public class Register extends JDialog
 				  ||callField.getText().length()==0)
 				{
 					JOptionPane.showMessageDialog(Register.this, "提交的数据不合法，请检查", "提示", JOptionPane.INFORMATION_MESSAGE);
-				}				
+					return;
+				}		
+				if(!(String.valueOf(passField.getPassword()).equals(String.valueOf(comfirePassField.getPassword()))))
+				{
+					JOptionPane.showMessageDialog(Register.this, "输入密码不一致，请重新输入", "提示", JOptionPane.INFORMATION_MESSAGE);
+					passField.setText("");
+					comfirePassField.setText("");
+					return;
+				}
 				String args[]=new String[7];
 				args[0]=userField.getText();
 				args[1]=cardIdField.getText();
@@ -220,15 +236,14 @@ public class Register extends JDialog
 				args[6]=statu;	
 				try
 				{
-					sql=new RegisterSql();
-					sql.initParam("mysql.properties");
+					sql=new RegisterSql("mysql.properties");
 					sql.insertUserPrepare(INSERT, args);
 				} catch (Exception e1)
 				{
 					try
 					{
 						System.out.println("异常");
-//						sql.createTable(CREATE_TABLE);
+						sql.createTable(CREATE_TABLE);
 						sql.insertUserPrepare(INSERT, args);
 					}
 					catch (Exception e2)
@@ -236,6 +251,7 @@ public class Register extends JDialog
 						e2.printStackTrace();
 					}										
 				}
+				setVisible(false);
 			}		  
 		});
 	}
@@ -269,20 +285,5 @@ public class Register extends JDialog
 		{
 			return "弱";
 		}
-	}
-	public static void main(String[] args)
-	{
-		new Register();
-		/*String str1="^(?:(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])|(?=.*[A-Z])(?=.*[a-z])(?=.*[^A-Za-z0-9])|(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])|(?=.*[a-z])(?=.*[0-9])(?=.*[^A-Za-z0-9])).{6,12}$";
-		String str2="^(\\d+([a-z]|[A-Z])+\\d*)|(([a-z]|[A-Z])+\\d+([a-z]|[A-Z])*)|([a-z]+[A-Z]+)|([A-Z]+[a-z]+)$";
-		String str3="\\w{1,5}|\\d{6,20}|[a-z]{6,20}|[A-Z]{6,20}";
-		String string="sssg4164";
-		String string2="FAFsss";
-		String string3="FAF132";
-		String string4="12fafa";
-		System.out.println(string.matches(str2));
-		System.out.println(string2.matches(str2));
-		System.out.println(string3.matches(str2));
-		System.out.println(string4.matches(str2));*/
-	}
+	}	
 }
