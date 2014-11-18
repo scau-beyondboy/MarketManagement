@@ -20,7 +20,7 @@ public class RegisterSql
 	private String url;
 	private String user;
 	private String password;
-	public static final String QUERY="select * from register_table where ? in (user,cardId) and pass=? and status=?";
+	public static final String QUERY="select * from register_table where ? in(userName,cardId) and pass=? and user_status=?";
 	public RegisterSql(String paramFile)
 	{
 		try
@@ -52,6 +52,7 @@ public class RegisterSql
 	 * 建立数据表
 	 * @param sql 建立数据表语句
 	 * @throws Exception
+	 * 
 	 */
 	public void createTable(String sql)throws Exception
 	{		
@@ -91,7 +92,7 @@ public class RegisterSql
 			preparedStatement.setString(3, statu);
 			try
 			(
-					ResultSet rs=preparedStatement.executeQuery();
+					ResultSet rs=preparedStatement.executeQuery();					
 			)
 			{
 				if(rs.next())

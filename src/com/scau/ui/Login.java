@@ -8,14 +8,21 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-
+import com.scau.model.RegisterSql;
+/**
+ * 登陆界面
+ * @author beyondboy
+ */
 public class Login extends JDialog
 {
+	 //数据库对象
+	RegisterSql sql;
 	JLabel userName=new JLabel();
 	JLabel status=new JLabel();
 	JLabel pass=new JLabel();
@@ -25,6 +32,12 @@ public class Login extends JDialog
 	JButton registerbButton=new JButton();
 	JButton loginButton=new JButton();
 	JPanel panel1=new JPanel();
+	/**
+	 * 初始登陆界面
+	 * @param frame 界面的父frame
+	 * @param title 界面的标题
+	 * @param model 该窗口的模式
+	 */
 	public Login(Frame frame,String title,boolean model)
 	{
 		super(frame,title,model);
@@ -49,6 +62,7 @@ public class Login extends JDialog
 	{
 		new Login();
 	}
+	//初始界面的配置
 	public void uiInit() throws Exception
 	{
 		panel1.setLayout(null);
@@ -65,12 +79,12 @@ public class Login extends JDialog
 		statusBox.setBounds(300, 15, 80, 30);
 		userNameField.setBounds(55, 20, 190, 27);
 		passField.setBounds(50, 80, 190, 27);
-		registerbButton.setText("登陆");
-		registerbButton.setBounds(100,130,83,40);
-		registerbButton.setForeground(Color.red);
-		loginButton.setText("注册");		
-		loginButton.setBounds(220, 130, 83, 40);
+		loginButton.setText("登陆");
+		loginButton.setBounds(100,130,83,40);
 		loginButton.setForeground(Color.red);
+		registerbButton.setText("注册");		
+		registerbButton.setBounds(220, 130, 83, 40);
+		registerbButton.setForeground(Color.red);
 		panel1.add(userName);
 		panel1.add(pass);
 		panel1.add(status);
@@ -80,16 +94,46 @@ public class Login extends JDialog
 		panel1.add(registerbButton);
 		panel1.add(loginButton);
 		getContentPane().add(panel1);
+		//登陆按钮的监听事件
 		loginButton.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
+				//判断输入是否为空
 				if(userNameField.getText().length()==0||String.valueOf(passField.getPassword()).length()==0)
 				{
 					JOptionPane.showMessageDialog(null,  "请输入数据","信息错误提示",JOptionPane.INFORMATION_MESSAGE);
 					return;
 				}
+				else
+				{
+					sql=new RegisterSql("mysql.properties");
+					//验证是否用户存在
+					if(sql.validate(userNameField.getText(),String.valueOf(passField.getPassword()),(String)statusBox.getSelectedItem()))
+					{
+						sql=null;
+						setVisible(false);
+						//弹出登陆成功提示
+						(new TimeDialog()).showDialog(Login.this, "成功登陆",2);						
+						return;
+					}
+					else
+					{
+						JOptionPane.showMessageDialog(null,  "请输入的用户不存在","信息错误提示",JOptionPane.INFORMATION_MESSAGE);
+						return;
+					}
+				}				
+			}
+		});
+		//注册按钮监听
+		registerbButton.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				new Register();
+				setVisible(false);
 			}
 		});
 	}	
