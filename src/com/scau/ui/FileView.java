@@ -58,11 +58,10 @@ public class FileView
 	{
 		JFrame jFrame=new JFrame();
 		JLabel jLabel=new JLabel();
-		File file=new File(".");
+		File file=new File("dsk.png");
+		System.out.println(file.getAbsolutePath());
 		String path=file.getParent();
-		System.out.println(path);
-//		jLabel.setIcon(new ImageIcon("D:/AndroidProject/MarketManagement/src/com/scau/ui/dsk.png"));
-		jLabel.setIcon(new ImageIcon("/src/com/scau/ui/dsk.png"));
+		jLabel.setIcon(new ImageIcon("ico/dsk.png"));
 		jFrame.setLayout(new BorderLayout());
 		//jFrame.setSize(new Dimension(90,80));
 		jFrame.add(new JScrollPane(jLabel),BorderLayout.CENTER);
