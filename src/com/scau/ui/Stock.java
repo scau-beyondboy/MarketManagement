@@ -262,7 +262,7 @@ public class Stock
 		//ÐÞ¸Ä°´Å¥Ìí¼Ó¼àÌý
 		modifyButton.addActionListener(new ActionListener()
 		{
-			@Override
+			@Override			
 			public void actionPerformed(ActionEvent e)
 			{
 				if(jTable.getSelectedRow()>=0)
@@ -343,6 +343,14 @@ public class Stock
 					sql.insertTable(INSERT_CREATE,data);
 				}
 				return;
+			}
+		});
+		loadFileButton.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				new FileViewUi(Stock.this);
 			}
 		});
 	}
