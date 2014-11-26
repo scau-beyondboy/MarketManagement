@@ -43,7 +43,7 @@ public class TimeDialog
 			@Override
 			public void run()
 			{
-				TimeDialog.this.second--;
+				TimeDialog.this.second--;			
 				if(TimeDialog.this.second==0)
 				{
 					jDialog.dispose();
