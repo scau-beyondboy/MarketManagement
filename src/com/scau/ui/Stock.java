@@ -207,8 +207,7 @@ public class Stock
 	public void uiInit()
 	{			
 		panel1.setLayout(new FlowLayout(FlowLayout.CENTER,10,0));
-		panel1.add(new JLabel("时间:"));
-		
+		panel1.add(new JLabel("时间:"));		
 		dateField.setText(GetTime.getTime());
 		panel1.add(dateField);
 		panel1.add(new JLabel("操作员:"));
