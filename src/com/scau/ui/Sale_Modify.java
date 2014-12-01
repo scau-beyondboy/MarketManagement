@@ -1,5 +1,16 @@
 package com.scau.ui;
 
+import java.awt.Event;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.Statement;
 import java.util.Arrays;
 import java.util.Vector;
 import javax.swing.JButton;
@@ -10,6 +21,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import com.scau.model.GetConnection;
 
 public class Sale_Modify extends JDialog
 {
@@ -85,6 +97,54 @@ public class Sale_Modify extends JDialog
 		comfirmButton.setBounds(600, 220, 80, 20);
 		add(exitButton);
 		add(comfirmButton);
+		contentField.addKeyListener(new KeyAdapter()
+		{
+			@Override
+			public void keyReleased(KeyEvent e)
+			{
+				if(e.getKeyCode()==Event.ENTER)
+				{
+					if(modifyWayBox.getSelectedIndex()==0)
+					{
+						tableModel2.setValueAt(contentField.getText(), 0, 4);
+					}
+					else
+					{
+						tableModel2.setValueAt(contentField.getText(), 0, 5);
+					}
+					contentField.setText("");
+				}
+			}
+		});
+		exitButton.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				setVisible(false);
+			}
+		});
+		comfirmButton.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				try
+				(
+						Connection connection=GetConnection.getConnection("mysql.properties");
+						//CallableStatement statement=connection.prepareCall("{call price_insert(}")
+						Statement statement=connection.createStatement();
+				)
+				{
+						statement.execute("update price_sql set price="+tableModel2.getValueAt(0, 4)+",discount="+tableModel2.getValueAt(0, 5)+" where id="+tableModel2.getValueAt(0, 0)+";");
+				}
+				catch (Exception e2) 
+				{
+					System.out.println("修改不成功");
+					e2.printStackTrace();
+				}
+			}
+		});
 	}
 	/*public static void main(String[] args)
 	{
