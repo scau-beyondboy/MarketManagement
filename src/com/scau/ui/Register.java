@@ -29,14 +29,14 @@ import com.scau.model.RegisterSql;
  */
 public class Register extends JDialog
 {
-	String statu="普通会员";
+	String statu="管理员";
 	JLabel userName=new JLabel();
 	JLabel cardId=new JLabel();
 	JLabel pass=new JLabel();
 	JLabel comfirePass=new JLabel();
 	JLabel call=new JLabel();
 	JLabel date=new JLabel();
-	JLabel intigral=new JLabel();
+//	JLabel intigral=new JLabel();
 	JLabel validate=new JLabel();
 	JTextField validateField=new JTextField();
 	JTextField userField=new JTextField();
@@ -45,13 +45,13 @@ public class Register extends JDialog
 	JPasswordField comfirePassField=new JPasswordField();
 	JTextField callField=new JTextField();
 	JTextField dateField=new JTextField();
-	JTextField intigralField=new JTextField();
+	//JTextField intigralField=new JTextField();
 	JComboBox<String> statusBox=new JComboBox<String>();
 	JButton registerButton=new JButton();
 	JButton resetButton=new JButton();
 	JPanel panel1=new JPanel();
-	public final static String CREATE_TABLE="create table register_table ( id int auto_increment primary key,userName varchar(255),cardId varchar(255),pass varchar(255),user_call varchar(255),user_date varchar(255),user_intigeral varchar(255),user_status varchar(255));";
-	public final static String INSERT="insert into register_table (userName,cardId,pass,user_call,user_date,user_intigeral,user_status) values(?,?,?,?,?,?,?);";
+	public final static String CREATE_TABLE="create table register_table ( id int auto_increment primary key,userName varchar(255) ,cardId varchar(255),pass varchar(255),user_call varchar(255),user_date varchar(255),user_status varchar(255));";
+	public final static String INSERT="insert into register_table (userName,cardId,pass,user_call,user_date,user_status) values(?,?,?,?,?,?);";
 	//正则表达式
 	String str1="^(?:(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])|(?=.*[A-Z])(?=.*[a-z])(?=.*[^A-Za-z0-9])|(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])|(?=.*[a-z])(?=.*[0-9])(?=.*[^A-Za-z0-9])).{6,12}$";
 	String str2="^(\\d+([a-z]|[A-Z])+\\d*)|(([a-z]|[A-Z])+\\d+([a-z]|[A-Z])*)|([a-z]+[A-Z]+[a-z]*)|([A-Z]+[a-z]+[A-Z]*)$";
@@ -61,7 +61,7 @@ public class Register extends JDialog
 	public Register()
 	{
 		this(new Frame(), "注册用户",false);
-		setSize(400, 420);
+		setSize(400, 380);
 		setLocation(450, 200);
 		setVisible(true);
 	}
@@ -78,11 +78,11 @@ public class Register extends JDialog
 			e.printStackTrace();
 		}
 	}	
-	public static void main(String[] args)
+	/*public static void main(String[] args)
 	{
 		new Register();
 		new Login();
-	}
+	}*/
 	private void uiInit() throws Exception
 	{
 		//清除布局格式
@@ -101,8 +101,8 @@ public class Register extends JDialog
 		call.setBounds(10, 170, 42, 15);
 		date.setText("开卡日期");
 		date.setBounds(10, 210, 60, 15);
-		intigral.setText("积分");
-		intigral.setBounds(10, 250, 42, 15);
+//		intigral.setText("积分");
+//		intigral.setBounds(10, 250, 42, 15);
 		userField.setBounds(60, 10, 190, 27);
 		cardIdField.setBounds(60, 50, 190, 27);
 		passField.setBounds(60, 90, 190, 27);
@@ -110,14 +110,14 @@ public class Register extends JDialog
 		validateField.setBounds(300, 90, 27, 27);
 		callField.setBounds(60, 170, 190, 27);
 		dateField.setBounds(70, 210, 130, 27);
-		intigralField.setBounds(60, 250, 50, 27);
+//		intigralField.setBounds(60, 250, 50, 27);
 		registerButton.setText("注册");
 		registerButton.setForeground(Color.red);
-		registerButton.setBounds(75, 300, 83, 40);
+		registerButton.setBounds(75,260, 83, 40);
 		resetButton.setText("重置");
-		resetButton.setBounds(200,300, 83, 40);
+		resetButton.setBounds(200,260, 83, 40);
 		resetButton.setForeground(Color.red);
-		statusBox.addItem("普通会员");
+		//statusBox.addItem("普通会员");
 		statusBox.addItem("管理员");
 		statusBox.addItem("收银员");
 		statusBox.setBounds(280, 10, 80, 27);		
@@ -131,7 +131,7 @@ public class Register extends JDialog
 		panel1.add(comfirePass);
 		panel1.add(call);
 		panel1.add(date);
-		panel1.add(intigral);
+//		panel1.add(intigral);
 		panel1.add(userField);
 		panel1.add(cardIdField);
 		panel1.add(passField);
@@ -140,7 +140,7 @@ public class Register extends JDialog
 		panel1.add(validateField);
 		panel1.add(callField);
 		panel1.add(dateField);
-		panel1.add(intigralField);
+//		panel1.add(intigralField);
 		panel1.add(statusBox);
 		panel1.add(registerButton);
 		panel1.add(resetButton);
@@ -204,7 +204,7 @@ public class Register extends JDialog
 				passField.setText("");
 				comfirePassField.setText("");
 				callField.setText("");
-				intigralField.setText("");
+				//intigralField.setText("");
 			}
 		});
 		//添加注册按钮监听
@@ -226,14 +226,14 @@ public class Register extends JDialog
 					comfirePassField.setText("");
 					return;
 				}
-				String args[]=new String[7];
+				String args[]=new String[6];
 				args[0]=userField.getText();
 				args[1]=cardIdField.getText();
 				args[2]=String.valueOf(passField.getPassword());
 				args[3]=callField.getText();
 				args[4]=dateField.getText();
-				args[5]=intigralField.getText();				
-				args[6]=statu;	
+//				args[5]=intigralField.getText();				
+				args[5]=statu;	
 				try
 				{
 					sql=new RegisterSql("mysql.properties");

@@ -112,10 +112,12 @@ public class SalePrice
 	//标记商品导入方式，0，1分别表示从仓库，文件导入;
 	int loadWay=0;
 	public Vector<String> tableData;
-	public SalePrice()
+	String name="";
+	public SalePrice(String name)
 	{
+		this.name=name;
 		Init();
-		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		jFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		jFrame.setLocation(200, 10);
 		jFrame.setSize(650, 700);
 		jFrame.setTitle("销售价格定制界面");
@@ -123,6 +125,7 @@ public class SalePrice
 	}
 	public void Init()
 	{
+		operaterField.setText(name);
 		queryBox.addItem("已录入价格的商品");
 		queryBox.addItem("未录入价格的商品");
 		panel.setLayout(new FlowLayout(FlowLayout.LEFT, 20, 0));
@@ -429,9 +432,9 @@ public class SalePrice
 				return -1;
 			}
 		}
-	public static void main(String[] args)
+	/*public static void main(String[] args)
 	{
 		new SalePrice();
-	}	
+	}	*/
 }
 

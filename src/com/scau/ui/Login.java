@@ -5,15 +5,19 @@ import java.awt.Font;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import com.scau.model.GetConnection;
 import com.scau.model.RegisterSql;
 /**
  * 登陆界面
@@ -73,7 +77,7 @@ public class Login extends JDialog
 		status.setText("身份:");
 		status.setFont(new Font(null,Font.BOLD,14));
 		status.setBounds(260,20,42,20);
-		statusBox.addItem("普通会员");
+		//statusBox.addItem("普通会员");
 		statusBox.addItem("管理员");
 		statusBox.addItem("收银员");
 		statusBox.setBounds(300, 15, 80, 30);
@@ -113,9 +117,22 @@ public class Login extends JDialog
 					if(sql.validate(userNameField.getText(),String.valueOf(passField.getPassword()),(String)statusBox.getSelectedItem()))
 					{
 						sql=null;
+						String name=getName(userNameField.getText(),String.valueOf(passField.getPassword()));
+						if(name.equals(""))
+						{
+							name=userNameField.getText();
+						}
 						setVisible(false);
 						//弹出登陆成功提示
-						(new TimeDialog()).showDialog(Login.this, "成功登陆",2);						
+						//(new TimeDialog()).showDialog(Login.this, "成功登陆",2);	
+						if(statusBox.getSelectedIndex()==1)
+						{
+							new FrontCharge(name);
+						}
+						else if(statusBox.getSelectedIndex()==0)
+						{
+							new User(name);
+						}
 						return;
 					}
 					else
@@ -136,5 +153,30 @@ public class Login extends JDialog
 				setVisible(false);
 			}
 		});
-	}	
+	}
+	public String getName(String cardId,String pass)
+	{
+		String name="";
+		try
+		(
+				Connection connection=GetConnection.getConnection("mysql.properties");
+				PreparedStatement statement=connection.prepareStatement("select userName from register_table where cardId=? and pass=?");
+		)
+		{
+				statement.setObject(1, cardId);
+				statement.setObject(2, pass);
+				ResultSet set=statement.executeQuery();
+				if(set.next())
+				{
+					name=(String)set.getObject(1);
+				}
+				return  name;
+		}
+		catch (Exception e) 
+		{
+			System.out.println("执行异常");
+			e.printStackTrace();
+		}
+		return name;
+	}
 }

@@ -74,17 +74,20 @@ public class FrontCharge
 	JPanel panel8=new JPanel();
 	JPanel panel9=new JPanel();
 	JFrame jFrame=new JFrame();
-	public FrontCharge()
+	String name;
+	public FrontCharge(String name)
 	{
+		this.name=name;
 		Init();
 		jFrame.setTitle("前台收银");
 		jFrame.setLocation(200, 20);
 		jFrame.setSize(750,600);
-		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		jFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		jFrame.setVisible(true);
 	}
 	public void Init()
 	{
+		chargerField.setText(name);
 		panel7.setLayout(new GridLayout(2, 3,20, 10));
 		panel9.setLayout(new BorderLayout());
 		panel.add(idJLabel);
@@ -374,8 +377,8 @@ public class FrontCharge
 			}
 		});
 	}
-	public static void main(String[] args)
+	/*public static void main(String[] args)
 	{
 		new FrontCharge();
-	}
+	}*/
 }

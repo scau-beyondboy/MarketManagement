@@ -76,9 +76,10 @@ public class Stock
 	Vector<String> rowindex2=new Vector<String>(7);
 	TableColumnModel tableColumnModel;
 	public static final String INSERT_CREATE="insert into stock_sql values(?,?,?,?,?,?,?,?)";
-	public Stock()
-	
+	String name="";
+	public Stock(String name)	
 	{
+		this.name=name;
 		jFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		uiInit();
 		jFrame.setSize(new Dimension(850,650));	
@@ -205,7 +206,8 @@ public class Stock
 		jFrame.add(new JScrollPane(jTable));
 	}
 	public void uiInit()
-	{			
+	{	
+		operaterField.setText(name);
 		panel1.setLayout(new FlowLayout(FlowLayout.CENTER,10,0));
 		panel1.add(new JLabel("Ê±¼ä:"));		
 		dateField.setText(GetTime.getTime());
@@ -353,8 +355,8 @@ public class Stock
 			}
 		});
 	}
-	public static void main(String[] args)
+	/*public static void main(String[] args)
 	{
 		new Stock();
-	}
+	}*/
 }

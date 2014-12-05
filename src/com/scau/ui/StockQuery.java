@@ -223,10 +223,10 @@ public class StockQuery
 			System.out.println("成功生成文件");
 		}
 	}
-	public static void main(String[] args)
+	/*public static void main(String[] args)
 	{
 		new StockQuery();
-	}
+	}*/
 }
 /*class SortableTableModel extends AbstractTableModel
 {
